@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NIIT School Management App</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Add Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <!-- Login/Signup Button -->
+    <div id="auth-menu-btn" style="position:fixed;top:24px;right:32px;z-index:2001;">
+      <button class="btn btn-outline-primary" onclick="document.getElementById('auth-modal').classList.add('active')">
+        <span class="material-icons align-middle">login</span> Login / Sign Up
+      </button>
+    </div>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">NIIT TRACK</div>
+      <nav>
+        <ul>
+          <li class="active" data-section="dashboard"><span class="material-icons">dashboard</span> Dashboard</li>
+          <li data-section="students"><span class="material-icons">people</span> Students</li>
+          <li data-section="courses"><span class="material-icons">menu_book</span> Courses</li>
+          <li data-section="attendance"><span class="material-icons">event_available</span> Attendance</li>
+          <li data-section="quizzes"><span class="material-icons">quiz</span> Quizzes</li>
+          <li data-section="reports"><span class="material-icons">bar_chart</span> Reports</li>
+          <li data-section="settings"><span class="material-icons">settings</span> Settings</li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer mt-auto p-3 text-center">
+        <div class="user-profile">
+          <span class="material-icons">account_circle</span>
+          <span id="admin-name">Admin</span>
+        </div>
+        <button class="btn btn-sm btn-outline-light mt-2" id="logout-btn"><span class="material-icons">logout</span> Logout</button>
+      </div>
+    </aside>
+    <!-- Main Content -->
+    <main class="main-content container-fluid">
+      <!-- Dashboard Section -->
+      <section id="dashboard-section" class="section active">
+        <h1 class="mb-4">Admin Dashboard</h1>
+        <div class="row g-4 mb-4">
+          <div class="col-md-3">
+            <div class="card shadow-sm border-0 text-center py-4">
+              <span class="stat display-5" id="stat-students">0</span>
+              <span>Students</span>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card shadow-sm border-0 text-center py-4">
+              <span class="stat display-5" id="stat-courses">0</span>
+              <span>Courses</span>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card shadow-sm border-0 text-center py-4">
+              <span class="stat display-5" id="stat-attendance">0</span>
+              <span>Attendance Records</span>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card shadow-sm border-0 text-center py-4">
+              <span class="stat display-5" id="stat-quizzes">0</span>
+              <span>Quizzes</span>
+            </div>
+          </div>
+        </div>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="card p-3">
+              <h5>Recent Student Registrations</h5>
+              <ul class="list-group list-group-flush" id="recent-students"></ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card p-3">
+              <h5>Upcoming Events</h5>
+              <ul class="list-group list-group-flush" id="upcoming-events">
+                <li class="list-group-item">No events scheduled.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Students Section -->
+      <section id="students-section" class="section">
+        <div class="section-header mb-3">
+          <h2>Student Management</h2>
+          <button class="btn btn-success" id="add-student-btn"><span class="material-icons">person_add</span> Add Student</button>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <input type="text" id="student-search" placeholder="Search students..." class="form-control">
+          </div>
+          <div class="col-md-6 text-end">
+            <button class="btn btn-outline-primary" id="export-students-btn"><span class="material-icons">download</span> Export CSV</button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table table table-striped table-hover align-middle" id="students-table">
+            <thead class="table-primary">
+              <tr><th>Name</th><th>Email</th><th>Program</th><th>Course</th><th>Phone</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <!-- Courses Section -->
+      <section id="courses-section" class="section">
+        <div class="section-header mb-3">
+          <h2>Course Management</h2>
+          <button class="btn btn-success" id="add-course-btn"><span class="material-icons">add</span> Add Course</button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table table table-striped table-hover align-middle" id="courses-table">
+            <thead class="table-primary">
+              <tr><th>Name</th><th>Description</th><th>Duration</th><th>Enrolled</th><th>Actions</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <!-- Attendance Section -->
+      <section id="attendance-section" class="section">
+        <div class="section-header mb-3">
+          <h2>Attendance Tracking</h2>
+          <input type="date" id="attendance-date" class="form-control w-auto">
+        </div>
+        <div class="table-responsive">
+          <table class="data-table table table-striped table-hover align-middle" id="attendance-table">
+            <thead class="table-primary">
+              <tr><th>Name</th><th>Present</th><th>Remarks</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <button class="btn btn-success mt-2" id="save-attendance-btn"><span class="material-icons">save</span> Save Attendance</button>
+      </section>
+      <!-- Quizzes Section -->
+      <section id="quizzes-section" class="section">
+        <div class="section-header mb-3">
+          <h2>Quiz Management</h2>
+          <button class="btn btn-success" id="add-quiz-btn"><span class="material-icons">upload_file</span> Upload Quiz</button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table table table-striped table-hover align-middle" id="quizzes-table">
+            <thead class="table-primary">
+              <tr><th>Title</th><th>Course</th><th>File</th><th>Date</th><th>Actions</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <!-- Reports Section -->
+      <section id="reports-section" class="section">
+        <div class="section-header mb-3">
+          <h2>Reports & Analytics</h2>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card p-3 mb-3">
+              <h6>Attendance Overview</h6>
+              <canvas id="attendance-chart" height="180"></canvas>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card p-3 mb-3">
+              <h6>Student Enrollment</h6>
+              <canvas id="enrollment-chart" height="180"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Settings Section -->
+      <section id="settings-section" class="section">
+        <div class="section-header mb-3">
+          <h2>Settings</h2>
+        </div>
+        <form id="settings-form" class="w-100" style="max-width: 400px;">
+          <div class="mb-3">
+            <label for="admin-name-input" class="form-label">Admin Name</label>
+            <input type="text" class="form-control" id="admin-name-input" value="Admin">
+          </div>
+          <div class="mb-3">
+            <label for="admin-email-input" class="form-label">Email</label>
+            <input type="email" class="form-control" id="admin-email-input" value="admin@niit.edu">
+          </div>
+          <div class="mb-3">
+            <label for="admin-password-input" class="form-label">Password</label>
+            <input type="password" class="form-control" id="admin-password-input" value="">
+          </div>
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="dark-mode-toggle">
+            <label class="form-check-label" for="dark-mode-toggle">Dark Mode</label>
+          </div>
+          <button type="submit" class="btn btn-success">Save Changes</button>
+        </form>
+      </section>
+    </main>
+    <!-- Modals -->
+    <div class="modal" id="student-modal">
+      <div class="modal-content p-4">
+        <h3 id="student-modal-title">Add Student</h3>
+        <form id="student-form">
+          <input type="hidden" id="student-id">
+          <label>Name<input type="text" id="student-name" class="form-control" required></label>
+          <label>Email<input type="email" id="student-email" class="form-control" required></label>
+          <label>Program<input type="text" id="student-program" class="form-control" required></label>
+          <label>Course<select id="student-course" class="form-select" required></select></label>
+          <label>Phone<input type="tel" id="student-phone" class="form-control" required></label>
+          <div class="modal-actions mt-3">
+            <button type="submit" class="btn btn-success">Save</button>
+            <button type="button" class="btn btn-light" id="close-student-modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="modal" id="course-modal">
+      <div class="modal-content p-4">
+        <h3 id="course-modal-title">Add Course</h3>
+        <form id="course-form">
+          <input type="hidden" id="course-id">
+          <label>Course Name<input type="text" id="course-name" class="form-control" required></label>
+          <label>Description<input type="text" id="course-description" class="form-control" required></label>
+          <label>Duration<input type="text" id="course-duration" class="form-control" required></label>
+          <div class="modal-actions mt-3">
+            <button type="submit" class="btn btn-success">Save</button>
+            <button type="button" class="btn btn-light" id="close-course-modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Login/Signup Modal -->
+    <div class="modal" id="auth-modal">
+      <div class="modal-content p-4" style="max-width:400px;">
+        <ul class="nav nav-tabs mb-3" id="authTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-pane" type="button" role="tab">Login</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup-pane" type="button" role="tab">Sign Up</button>
+          </li>
+        </ul>
+        <div class="tab-content" id="authTabContent">
+          <div class="tab-pane fade show active" id="login-pane" role="tabpanel">
+            <form id="login-form">
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" id="login-email" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" id="login-password" required>
+              </div>
+              <button type="submit" class="btn btn-success w-100">Login</button>
+              <button type="button" class="btn btn-outline-danger w-100 mt-2" id="google-login-btn"><span class="material-icons align-middle">google</span> Sign in with Google</button>
+              <div class="text-danger mt-2" id="login-error"></div>
+            </form>
+          </div>
+          <div class="tab-pane fade" id="signup-pane" role="tabpanel">
+            <form id="signup-form">
+              <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" id="signup-username" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" id="signup-email" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" id="signup-password" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="signup-confirm" required>
+              </div>
+              <button type="submit" class="btn btn-success w-100">Sign Up</button>
+              <button type="button" class="btn btn-outline-danger w-100 mt-2" id="google-signup-btn"><span class="material-icons align-middle">google</span> Sign up with Google</button>
+              <div class="text-danger mt-2" id="signup-error"></div>
+              <div class="text-success mt-2" id="signup-success"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Notifications -->
+    <div id="notification" class="notification"></div>
+  </div>
+  <script src="app.js"></script>
+  <!-- Add Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    import { SUPABASE_URL, SUPABASE_ANON_KEY } from './supabase-config.js';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Show modal on load if not logged in
+    if (!localStorage.getItem('niit_user')) {
+      document.getElementById('auth-modal').classList.add('active');
+    }
+    // Login
+    document.getElementById('login-form').onsubmit = async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        document.getElementById('login-error').textContent = error.message;
+      } else {
+        localStorage.setItem('niit_user', JSON.stringify(data.user));
+        document.getElementById('auth-modal').classList.remove('active');
+        location.reload();
+      }
+    };
+    // Signup
+    document.getElementById('signup-form').onsubmit = async function(e) {
+      e.preventDefault();
+      const username = document.getElementById('signup-username').value;
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      const confirm = document.getElementById('signup-confirm').value;
+      if (password !== confirm) {
+        document.getElementById('signup-error').textContent = 'Passwords do not match.';
+        return;
+      }
+      const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { username } } });
+      if (error) {
+        document.getElementById('signup-error').textContent = error.message;
+      } else {
+        document.getElementById('signup-success').textContent = 'Sign-up successful! Please check your email to confirm.';
+        document.getElementById('signup-error').textContent = '';
+      }
+    };
+    // Google login/signup
+    document.getElementById('google-login-btn').onclick = async function() {
+      await supabase.auth.signInWithOAuth({ provider: 'google' });
+    };
+    document.getElementById('google-signup-btn').onclick = async function() {
+      await supabase.auth.signInWithOAuth({ provider: 'google' });
+    };
+    // Hide modal if already logged in
+    if (localStorage.getItem('niit_user')) {
+      document.getElementById('auth-modal').classList.remove('active');
+    }
+  </script>
+</body>
+</html>

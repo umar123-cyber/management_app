@@ -1,4 +1,3 @@
-# management_app
 # NIIT School Management System
 
 A web-based school management system for NIIT that helps administrators manage students, courses, attendance, and quizzes.

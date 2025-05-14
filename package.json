@@ -1,0 +1,15 @@
+{
+  "name": "niit-school-management",
+  "version": "1.0.0",
+  "description": "NIIT School Management System",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve"
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  },
+  "devDependencies": {},
+  "author": "",
+  "license": "MIT"
+}
